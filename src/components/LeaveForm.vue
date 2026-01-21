@@ -37,7 +37,7 @@ const submitLeave = async () => {
 
   isSubmitting.value = true
   try {
-    const res = await axios.post('http://localhost:3000/leaves', form.value, {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/leaves`, form.value, {
       headers: {
         Authorization: `Bearer ${authStore.token}` // 🔑 กุญแจสำคัญอยู่ตรงนี้!
       }

@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
     async login(username: string, pass: string) {
       try {
         // 1. ยิง API ไปขอ Token
-        const res = await axios.post('http://localhost:3000/auth/login', {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
           username,
           password: pass
         })

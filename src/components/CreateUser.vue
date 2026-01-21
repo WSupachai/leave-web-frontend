@@ -25,7 +25,7 @@ const form = ref({
 
 const submitUser = async () => {
     try {
-        await axios.post('http://localhost:3000/users', form.value, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/users`, form.value, {
             headers: { Authorization: `Bearer ${authStore.token}` }
         })
 

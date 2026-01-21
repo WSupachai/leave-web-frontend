@@ -24,7 +24,7 @@ const isLoading = ref(false)
 
 // --- Actions ---
 const fetchUsers = async () => {
-  const res = await fetch('http://localhost:3000/users')
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/users`)
   users.value = await res.json()
 }
 
@@ -32,7 +32,7 @@ const fetchUsers = async () => {
 const fetchLeaves = async () => {
   try {
     // ใช้ axios แทน fetch จะได้ใส่ heades ง่ายๆ
-    const res = await axios.get('http://localhost:3000/leaves', {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/leaves`, {
       headers: { Authorization: `Bearer ${authStore.token}` } // 🔑 แนบกุญแจ
     })
     leaves.value = res.data
@@ -63,7 +63,7 @@ watch(() => authStore.isAuthenticated, (isLoggedIn) => {
 // ฟังก์ชันลบข้อมูล
 const deleteLeave = async (id: string) => {
   try {
-    await axios.delete(`http://localhost:3000/leaves/${id}`, {
+    await axios.delete(`${import.meta.env.VITE_API_URL}/leaves/${id}`, {
       headers: {
         Authorization: `Bearer ${authStore.token}` // 🔑 กุญแจผ่านทาง
       }
@@ -92,19 +92,25 @@ const deleteLeave = async (id: string) => {
 }
 
 const updateLeaveStatus = async (payload: { id: string, status: string }) => {
-  try {
-    const res = await fetch(`http://localhost:3000/leaves/${payload.id}/status`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: payload.status })
-    })
 
-    if (res.ok) {
-      // ไม่ต้อง alert ก็ได้ จะได้ดูลื่นไหล
-      fetchLeaves() // โหลดข้อมูลใหม่ทันที
-    }
+  try {
+   await axios.patch(`${import.meta.env.VITE_API_URL}/leaves/${payload.id}/status`, 
+      { status: payload.status }, // Body
+      {
+        headers: { 
+          Authorization: `Bearer ${authStore.token}` // 🔑 กุญแจสำคัญอยู่ตรงนี้!
+        }
+      }
+    )
+    fetchLeaves()
   } catch (err) {
-    alert('เกิดข้อผิดพลาด')
+   console.error(err)
+    // เช็คหน่อยว่าเป็นเพราะ Token หมดอายุไหม
+    if (axios.isAxiosError(err) && err.response?.status === 401) {
+       authStore.logout() // ให้ Login ใหม่
+    } else {
+       alert('เกิดข้อผิดพลาดในการอนุมัติ')
+    }
   }
 }
 
@@ -131,7 +137,8 @@ onMounted(() => {
 
 <template>
   <Login v-if="!authStore.isAuthenticated" />
-  <div class="min-h-screen bg-green-50/30 py-10 px-4 font-sans">
+  
+  <div v-else class="min-h-screen bg-green-50/30 py-10 px-4 font-sans">
     <div class="max-w-7xl mx-auto">
 
       <div class="text-center mb-8">

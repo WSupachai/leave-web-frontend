@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "module": "esnext",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "types": ["vite/client"],
     "paths": {
       "@/*": ["./src/*"]
     }
