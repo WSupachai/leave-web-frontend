@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useAuthStore } from '../stores/auth'
+
+const authStore = useAuthStore()
 
 // 1. รับข้อมูล Leaves เข้ามา
 const props = defineProps<{
@@ -72,8 +75,7 @@ const getVariantLabel = (variant: string) => {
 
 import Swal from 'sweetalert2'
 const handleDelete = (id: string) => {
-  // แจ้งเตือนยืนยันด้วย SweetAlert2
-  console.log('🗑️ กำลังจะลบ ID:', id)
+  //console.log('🗑️ กำลังจะลบ ID:', id)
   Swal.fire({
     title: 'ยืนยันการลบ?',
     text: "หากลบแล้วจะไม่สามารถกู้คืนข้อมูลได้",
@@ -179,7 +181,7 @@ const handleDelete = (id: string) => {
               </p>
             </div>
 
-            <div class="mt-3 flex gap-2 pt-2 border-t border-gray-100">
+            <div v-if="['manager', 'admin'].includes(authStore.userRole) && leave.status === 'Pending'" class="mt-3 flex gap-2 pt-2 border-t border-gray-100">
               <button @click="handleStatus(leave._id, 'Approved')" v-if="leave.status === 'Pending'"
                 class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-1.5 px-3 rounded border border-green-200 transition flex justify-center items-center gap-1">
                 ✅ อนุมัติ

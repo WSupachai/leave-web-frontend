@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
-// 1. รับข้อมูลรายชื่อพนักงาน (Props)
-//defineProps<{
-//  users: { _id: string, name: string }[]
-//}>()
+const authStore = useAuthStore()
 
-// 2. เตรียม Event ส่งกลับไปบอกแม่ (Emits)
+//  เตรียม Event ส่งกลับไปบอกแม่ (Emits)
 const emit = defineEmits(['on-success'])
 
 // --- State ---
 const form = ref({
   //user: '',
-  userName: '',
+  userName: authStore.userFullName,
   type: 'Vacation',
   timeVariant: 'full',
   startDate: '',
@@ -37,21 +37,28 @@ const submitLeave = async () => {
 
   isSubmitting.value = true
   try {
-    const res = await fetch('http://localhost:3000/leaves', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form.value)
+    const res = await axios.post('http://localhost:3000/leaves', form.value, {
+      headers: {
+        Authorization: `Bearer ${authStore.token}` // 🔑 กุญแจสำคัญอยู่ตรงนี้!
+      }
     })
 
-    if (res.ok) {
-      alert('✅ บันทึกข้อมูลเรียบร้อย')
+    // Axios จะ throw error ถ้าไม่สำเร็จ ดังนั้นถ้าหลุดมาบรรทัดนี้แปลว่าสำเร็จแน่นอน
+    Swal.fire({
+      icon: 'success',
+      title: 'บันทึกสำเร็จ!',
+      text: `คุณได้ทำการลาจำนวน ${leaveDuration.value}`,
+      timer: 2000,
+      showConfirmButton: false
+    })
+
       // Reset ค่า
       form.value.reason = ''
       form.value.startDate = ''
       form.value.endDate = ''
       form.value.handoverPerson = ''
       emit('on-success') // ส่งสัญญาณ
-    }
+ 
   } catch (err) {
     alert('❌ เชื่อมต่อ Server ไม่ได้')
   } finally {
@@ -119,9 +126,9 @@ const calculateDuration = () => {
 
     <div class="space-y-5">
 
-      <div>
+      <div class="hidden">
         <label :class="labelClass">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
-        <input type="text" v-model="form.userName" :class="inputClass">
+        <input type="text" v-model="form.userName" :class="inputClass" readonly>
       </div>
 
       <div class="space-y-3">
@@ -173,7 +180,7 @@ const calculateDuration = () => {
         <div v-if="form.timeVariant === 'full'" class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-xs font-bold text-gray-500">จากวันที่</label>
-            <input type="date" v-model="form.startDate"  @input="form.endDate = form.startDate" :class="inputClass">
+            <input type="date" v-model="form.startDate" @input="form.endDate = form.startDate" :class="inputClass">
           </div>
           <div>
             <label class="text-xs font-bold text-gray-500">ถึงวันที่</label>
