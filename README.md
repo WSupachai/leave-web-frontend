@@ -1,19 +1,42 @@
-# leave-web
+# Leave Management System (Frontend)
 
-This template should help get you started developing with Vue 3 in Vite.
+ระบบลางานออนไลน์สำหรับพนักงานและผู้ดูแลระบบ  
+พัฒนาด้วย Vue.js เชื่อมต่อกับ Backend ผ่าน REST API
 
-## Recommended IDE Setup
+## Features
+- Login / Logout
+- ยื่นใบลางานออนไลน์
+- ดูประวัติการลา
+- ผู้ดูแลอนุมัติ / ปฏิเสธการลา
+- แยกสิทธิ์ผู้ใช้งาน (Admin / User)
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Tech Stack
+**Frontend**
+- Vue.js
+- Axios
+- Tailwind CSS
 
-## Recommended Browser Setup
+**Backend**
+- NestJS
+- MongoDB
+- Mongoose
+- JWT Authentication
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Demo Account
+
+สามารถใช้บัญชีทดสอบเพื่อทดลองใช้งานระบบได้
+
+**User (Employee)**
+- Username: User A
+- Password: 123456
+- 
+ **User (Employee Role Manager)** 
+- Username: User B
+- Password: 123456
+
+**Admin**
+- Username: admin
+- Password: admin1234
 
 ## Customize configuration
 
